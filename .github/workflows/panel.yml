@@ -1,0 +1,71 @@
+name: Panel
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */6 * * *'   # watchdog: kalau panel mati, nyalakan lagi
+
+# hanya satu panel berjalan; run berikutnya antre sampai yang lama selesai
+concurrency:
+  group: panel
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write   # cache + jalankan ulang workflow
+  issues: write    # kirim URL panel ke Issue
+
+jobs:
+  panel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 358
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Restore data panel
+        uses: actions/cache/restore@v4
+        with:
+          path: data
+          key: panel-data-${{ github.run_id }}
+          restore-keys: panel-data-
+
+      - name: Siapkan Docker image
+        run: docker pull -q node:24-alpine || true
+
+      - name: Jalankan panel (maks 5 jam 35 menit)
+        env:
+          PORT: '3000'
+          DOCKER: '1'
+          ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
+          ADMIN_RESET: '1'
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          timeout --signal=TERM 335m node server.js || echo "panel berhenti (kode $?)"
+
+      - name: Simpan data panel
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data
+          key: panel-data-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Hapus cache lama (sisakan 2)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache list --key panel-data- --sort created_at --order desc --json id --jq '.[2:][].id' \
+            | xargs -r -n1 gh cache delete || true
+
+      - name: Jalankan run berikutnya
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run panel.yml --ref "${{ github.ref_name }}"
