@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a12">
+<title>Node Panel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 12h14M9 20h14' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#080a12;--s1:rgba(255,255,255,.035);--s2:rgba(255,255,255,.065);--bd:rgba(255,255,255,.09);--t:#e9ecf8;--m:#8d93b5;--a:#7c5cff;--a2:#22d3ee;--ok:#34d399;--er:#fb7185;--wn:#fbbf24;--r:16px;--sh:0 12px 40px -14px rgba(0,0,0,.65);--g:linear-gradient(135deg,#7c5cff,#22d3ee)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{color-scheme:dark;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--t);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 520px at 8% -10%,rgba(124,92,255,.26),transparent 60%),radial-gradient(800px 500px at 100% 0,rgba(34,211,238,.14),transparent 55%),radial-gradient(700px 500px at 50% 120%,rgba(124,92,255,.12),transparent 60%)}
+a{color:inherit;text-decoration:none;cursor:pointer}
+h1,h2,h3{margin:0;letter-spacing:-.01em}h1{font-size:22px}h3{font-size:16px;margin-bottom:12px}
+.m{color:var(--m)}.hide{display:none!important}.sp{flex:1}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:9px}::-webkit-scrollbar-track{background:transparent}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 16px 90px;animation:up .35s ease both}
+.top{position:sticky;top:0;z-index:30;background:rgba(8,10,18,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding-top:env(safe-area-inset-top)}
+.bar{max-width:1120px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px}.logo b span{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top nav{display:flex;gap:4px;margin-left:10px;flex:1}
+.top nav a{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;color:var(--m);transition:.2s}
+.top nav a:hover{background:var(--s2);color:var(--t)}.top nav a.act{background:var(--s2);color:var(--t);box-shadow:inset 0 0 0 1px var(--bd)}
+.usr{display:flex;align-items:center;gap:8px}.av{width:32px;height:32px;border-radius:50%;background:var(--g);display:grid;place-items:center;font-weight:700;color:#fff}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:18px;backdrop-filter:blur(14px);box-shadow:var(--sh);margin-bottom:14px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:600;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s,background .2s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0) scale(.98)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.pri{background:var(--g);box-shadow:0 8px 24px -10px rgba(124,92,255,.9)}
+.btn.ok{background:linear-gradient(135deg,#10b981,#34d399);color:#04110c;box-shadow:0 8px 24px -12px rgba(52,211,153,.9)}
+.btn.ghost{background:var(--s2);box-shadow:inset 0 0 0 1px var(--bd)}.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.btn.dng{background:linear-gradient(135deg,#e11d48,#fb7185)}.btn.dng.ghost{background:rgba(251,113,133,.12);color:var(--er);box-shadow:inset 0 0 0 1px rgba(251,113,133,.35)}
+.btn.sm{padding:7px 11px;font-size:13px;border-radius:10px}.btn.wide{width:100%;padding:12px}
+.ib{width:32px;height:32px;display:inline-grid;place-items:center;border:0;border-radius:9px;background:transparent;color:var(--m);cursor:pointer;transition:.18s}.ib:hover{background:var(--s2);color:var(--t)}.ib.d:hover{color:var(--er)}
+.in{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;color:var(--t);font:inherit;outline:0;transition:.2s}
+.in:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(124,92,255,.25)}textarea.in{resize:vertical;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace}select.in{appearance:none}
+.field{margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--m);margin-bottom:5px;font-weight:600;letter-spacing:.02em}
+.pill{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--s2);color:var(--m);text-transform:uppercase;letter-spacing:.04em}
+.pill.ok{background:rgba(52,211,153,.15);color:var(--ok)}.pill.wn{background:rgba(251,191,36,.15);color:var(--wn)}.pill.er{background:rgba(251,113,133,.15);color:var(--er)}
+.dot{width:10px;height:10px;border-radius:50%;background:#4b5073;flex:none}.dot.on{background:var(--ok);animation:pulse 2s infinite}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.sc{cursor:pointer;transition:transform .2s,border-color .2s,background .2s;margin:0;animation:up .4s ease both}.sc:hover{transform:translateY(-3px);border-color:rgba(124,92,255,.5);background:var(--s2)}
+.sc-h{display:flex;align-items:center;gap:9px}.sc-h b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}
+.sc-m{display:flex;gap:14px;color:var(--m);font-size:12.5px;margin:12px 0}.sc-m span{display:flex;align-items:center;gap:5px}
+.sc-a{display:flex;gap:8px}
+.empty{text-align:center;padding:46px 12px;color:var(--m)}.empty .ei{width:64px;height:64px;border-radius:20px;background:var(--s2);display:grid;place-items:center;margin:0 auto 12px;color:var(--a2)}
+.back{margin-bottom:12px}.back a{color:var(--m)}.back a:hover{color:var(--t)}
+.hero{padding:20px}.hr1{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.ht{display:flex;align-items:center;gap:11px;min-width:0}.ht h1{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbtns{display:flex;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.chip{display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.3);border:1px solid var(--bd);border-radius:12px;padding:7px 8px 7px 12px;min-width:0;max-width:100%}
+.chip small{color:var(--m);font-size:10.5px;display:block;letter-spacing:.06em;font-weight:700}.chip b{font-weight:600;word-break:break-all}.chip a{color:var(--a2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:rgba(0,0,0,.28);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}.stat span{display:flex;align-items:center;gap:6px;color:var(--m);font-size:11.5px;font-weight:600}
+.stat b{display:block;font-size:19px;margin:3px 0 1px}.stat small{color:var(--m);font-size:11.5px}
+.bar2{height:5px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden;margin-top:7px}.bar2 i{display:block;height:100%;background:var(--g);border-radius:9px;transition:width .7s ease;width:0}
+.tabs{display:flex;align-items:center;gap:4px;padding:5px;background:rgba(14,17,30,.82);border:1px solid var(--bd);border-radius:14px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px;position:sticky;top:58px;z-index:20;backdrop-filter:blur(14px)}
+.tabs::-webkit-scrollbar{display:none}.tab{display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:10px;color:var(--m);font-weight:600;white-space:nowrap;transition:.2s}
+.tab:hover{color:var(--t);background:var(--s2)}.tab.act{background:var(--g);color:#fff;box-shadow:0 6px 18px -8px rgba(124,92,255,.9)}
+.pane{animation:up .3s ease both}
+.term{background:#04050a;border:1px solid var(--bd);border-radius:12px;height:min(52vh,470px);overflow:auto;padding:12px 14px;font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all}
+.ln{min-height:1.55em}.ln.pn{color:var(--a2)}.ln.tn{color:#c4b5fd}
+.cmd{display:flex;align-items:center;gap:8px;margin-top:10px;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:12px;padding:4px 6px 4px 12px}.cmd:focus-within{border-color:var(--a);box-shadow:0 0 0 3px rgba(124,92,255,.22)}
+.cmd input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--t);font:13px ui-monospace,Menlo,Consolas,monospace;padding:9px 0}.cmd svg{color:var(--a2)}
+.tool{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.sw{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}.sw input{display:none}
+.sw i{width:42px;height:24px;background:rgba(255,255,255,.12);border-radius:99px;position:relative;transition:.25s;flex:none}.sw i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.25s}
+.sw input:checked+i{background:var(--g)}.sw input:checked+i:after{transform:translateX(18px)}
+.crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}.crumb{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;color:var(--a2);font-weight:600}.crumb:hover{background:var(--s2)}.sep{color:var(--m)}
+.frow{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;transition:background .15s}.frow:hover{background:var(--s2)}
+.cb{width:17px;height:17px;accent-color:#7c5cff;cursor:pointer}
+.fn{display:flex;align-items:center;gap:12px;min-width:0;cursor:pointer}.fn b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fn small{color:var(--m);font-size:11.5px}.fn>div{min-width:0}
+.fi{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--s2);color:var(--m);flex:none}.fi.d{background:rgba(124,92,255,.16);color:#a99bff}.fi.js{background:rgba(251,191,36,.14);color:var(--wn)}.fi.json{background:rgba(52,211,153,.14);color:var(--ok)}
+.fa{display:flex;gap:2px;opacity:.55;transition:.2s}.frow:hover .fa{opacity:1}
+.selbar{display:flex;align-items:center;gap:8px;background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.4);border-radius:12px;padding:8px 12px;margin-bottom:10px;animation:up .2s ease both;flex-wrap:wrap}
+.sk{background:linear-gradient(90deg,var(--s1),var(--s2),var(--s1));background-size:200% 100%;animation:sh 1.2s infinite;border-radius:14px;margin-bottom:10px}
+.ad{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(0,0,0,.28);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin-bottom:8px;flex-wrap:wrap}.ad b{word-break:break-all}
+.li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid var(--bd);flex-wrap:wrap}.li:first-of-type{border-top:0}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.kv .stat b{font-size:15px;word-break:break-all}
+.ok-t{color:var(--ok)}.er-t{color:var(--er)}.ok-t svg,.er-t svg{vertical-align:-3px}
+.ov{position:fixed;inset:0;background:rgba(3,4,10,.66);backdrop-filter:blur(7px);display:grid;place-items:center;z-index:60;padding:14px;animation:fade .2s both}.ov.out{animation:fadeo .18s both}
+.md{width:min(94vw,460px);background:#0f1220;border:1px solid var(--bd);border-radius:20px;padding:22px;box-shadow:0 30px 80px -20px #000;animation:pop .25s cubic-bezier(.2,.9,.3,1.2) both;max-height:92vh;overflow:auto}.md.big{width:min(96vw,980px)}
+.md p{margin:0 0 14px}.macts{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:16px}
+.eh{display:flex;align-items:center;gap:10px;margin-bottom:12px}.edit{width:100%;height:min(64vh,560px);background:#04050a;border:1px solid var(--bd);border-radius:12px;color:var(--t);padding:14px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;outline:0;resize:none;tab-size:2;white-space:pre;overflow:auto}.edit:focus{border-color:var(--a)}
+#toasts{position:fixed;right:14px;bottom:14px;display:grid;gap:8px;z-index:90;max-width:min(380px,calc(100vw - 28px))}
+.toast{display:flex;align-items:center;gap:10px;background:#141829;border:1px solid var(--bd);border-left:3px solid var(--a);padding:11px 14px;border-radius:12px;box-shadow:var(--sh);animation:tin .3s cubic-bezier(.2,.9,.3,1.2) both}
+.toast.ok{border-left-color:var(--ok)}.toast.ok svg{color:var(--ok)}.toast.err{border-left-color:var(--er)}.toast.err svg{color:var(--er)}.toast.out{animation:tout .25s both}
+.uq{position:fixed;left:14px;bottom:14px;width:min(340px,calc(100vw - 28px));background:#0f1220;border:1px solid var(--bd);border-radius:16px;padding:12px 14px;z-index:70;box-shadow:var(--sh);transform:translateY(130%);opacity:0;transition:.35s cubic-bezier(.2,.9,.3,1.1);max-height:50vh;overflow:auto}.uq.show{transform:none;opacity:1}
+.uh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.uh b{display:flex;gap:7px;align-items:center}
+.ur{margin-bottom:10px}.ut{display:flex;justify-content:space-between;gap:8px;font-size:12.5px}.ut span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ut small{color:var(--m);display:flex;align-items:center}
+.pbar{height:5px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden;margin-top:5px}.pbar i{display:block;height:100%;background:var(--g);transition:width .2s}.pbar i.done{background:var(--ok)}.pbar i.err,.pbar i.cancel{background:var(--er)}
+.ur a{font-size:11.5px;color:var(--er)}
+.drop{position:fixed;inset:0;z-index:55;background:rgba(124,92,255,.18);backdrop-filter:blur(4px);display:none;place-items:center;pointer-events:none}.drop.show{display:grid}
+.drop div{border:2px dashed var(--a2);border-radius:26px;padding:50px 60px;text-align:center;font-size:18px;font-weight:700;background:rgba(8,10,18,.7)}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.lg{width:min(94vw,400px);text-align:center;padding:28px;animation:pop .5s cubic-bezier(.2,.9,.3,1.2) both}
+.lg h1{font-size:28px;margin:12px 0 4px}.lg h1 span{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}.lg .field{text-align:left}
+.seg{display:flex;background:rgba(0,0,0,.35);border-radius:12px;padding:4px;margin:18px 0}.seg button{flex:1;border:0;background:none;color:var(--m);padding:9px;border-radius:9px;font:inherit;font-weight:600;cursor:pointer;transition:.2s}.seg button.act{background:var(--s2);color:var(--t)}
+.cat{display:flex;gap:8px;flex-wrap:wrap}.cat .btn{flex:none}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}@keyframes fadeo{to{opacity:0}}
+@keyframes pop{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+@keyframes sh{to{background-position:-200% 0}}
+@keyframes tin{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}@keyframes tout{to{opacity:0;transform:translateX(30px)}}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.top nav a span{display:none}.top nav a{padding:9px 11px}.hero{padding:16px}.pbtns{width:100%}.pbtns .btn{flex:1;padding:10px 8px}.fa{opacity:1}#toasts{top:12px;bottom:auto;right:12px;left:12px;max-width:none}.tabs{top:56px}.wrap{padding-bottom:110px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body>
+<div id="bg"></div><div id="app"></div><div id="toasts"></div><div id="uq" class="uq"></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const enc=encodeURIComponent;
+const I={play:'<polygon points="6 4 20 12 6 20 6 4"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="2"/>',refresh:'<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/>',zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',plus:'<path d="M12 5v14M5 12h14"/>',folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',trash:'<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',type:'<path d="M4 7V4h16v3M9 20h6M12 4v16"/>',archive:'<rect x="3" y="3" width="18" height="5" rx="1"/><path d="M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/>',copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',server:'<rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01M6 17h.01"/>',terminal:'<path d="M4 17l6-6-6-6"/><path d="M12 19h8"/>',globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/>',sliders:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',check:'<path d="M20 6L9 17l-5-5"/>',cpu:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/>',disk:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L21 2M16 7l3 3"/>',search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',up:'<path d="M12 19V5M5 12l7-7 7 7"/>'};
+const ic=(n,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">${I[n]||''}</svg>`;
+const LOGO=(s=34)=>`<svg width="${s}" height="${s}" viewBox="0 0 32 32"><defs><linearGradient id="lg${s}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg${s})"/><path d="M9 12h14M9 20h14" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>`;
+
+const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
+const fmtUp=ms=>{let s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?`${d}h ${h}j`:h?`${h}j ${m}m`:m?`${m}m ${s%60}d`:`${s}d`};
+const ago=t=>{const s=(Date.now()-t)/1000;return s<60?'baru saja':s<3600?Math.floor(s/60)+' mnt lalu':s<86400?Math.floor(s/3600)+' jam lalu':new Date(t).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})};
+const ramTxt=r=>r==0?'Unlimited':(r/1024)+' GB';
+const fld=(l,i)=>`<div class=field><label>${l}</label>${i}</div>`;
+
+async function api(p,m='GET',b){let r;try{r=await fetch('/api'+p,{method:m,headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined})}catch(e){throw new Error('Tidak bisa konek ke panel (tunnel putus / server mati)')}
+const t=await r.text();let j={};try{j=JSON.parse(t)}catch{}
+if(r.status===401&&p!=='/login'&&p!=='/me'){me=null;route();return new Promise(()=>{})}
+if(!r.ok)throw new Error(j.error||('HTTP '+r.status+' '+t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,150)));return j}
+const tr=async f=>{try{return await f()}catch(e){toast(e.message,'err')}};
+
+function toast(msg,type='info'){const t=document.createElement('div');t.className='toast '+type;t.innerHTML=ic(type=='err'?'x':type=='ok'?'check':'server',17)+'<span>'+E(msg)+'</span>';$('#toasts').appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),260)},type=='err'?5500:2800)}
+function openModal(html,big=false){const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class="md${big?' big':''}">${html}</div>`;document.body.appendChild(o);let res;const p=new Promise(r=>res=r);
+const close=v=>{if(o._d)return;o._d=1;o.classList.add('out');setTimeout(()=>o.remove(),180);res(v)};o._c=close;
+o.addEventListener('mousedown',e=>{if(e.target===o&&!big)close(null)});$$('[data-x]',o).forEach(b=>b.addEventListener('click',()=>close(b.dataset.x)));return{el:o,close,p}}
+const ask=(title,val='',ph='')=>{const m=openModal(`<h3>${E(title)}</h3><input class=in id=mi value="${E(val)}" placeholder="${E(ph)}" autocomplete=off><div class=macts><button class="btn ghost" data-x="">Batal</button><button class="btn pri" id=mok>OK</button></div>`);const i=$('#mi',m.el);setTimeout(()=>{i.focus();i.select()},60);const go_=()=>m.close(i.value.trim());$('#mok',m.el).onclick=go_;i.onkeydown=e=>{if(e.key==='Enter')go_()};return m.p.then(v=>v||null)};
+const sure=(msg,danger=true,okTxt='Ya, lanjut')=>openModal(`<h3>Konfirmasi</h3><p class=m>${msg}</p><div class=macts><button class="btn ghost" data-x="">Batal</button><button class="btn ${danger?'dng':'pri'}" data-x=1>${okTxt}</button></div>`).p.then(v=>v==='1');
+const cp=t=>{const done=()=>toast('Tersalin','ok');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done).catch(()=>{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch{}x.remove();done()})};
+const go=h=>{location.hash=h};
+
+let me=null,S=null,cur=null,srvId=null,tab='con',path='',es=null,tm=null,sel=new Set(),files=[],cmdHist=[],hi=0,stick=true,lm='login';
+const TABS=[['con','Console','terminal'],['files','Files','folder'],['start','Startup','sliders'],['net','Network','globe'],['bk','Backups','archive'],['set','Settings','gear']];
+
+/* ---------- login ---------- */
+function loginView(){clearInterval(tm);es&&es.close();es=null;srvId=null;
+$('#app').innerHTML=`<div class=login><div class="card lg">${LOGO(56)}<h1>Node<span>Panel</span></h1><p class=m style="margin:0">Kelola server Node.js lo dengan mudah</p>
+<div class=seg><button class=act data-m=login>Masuk</button><button data-m=reg>Daftar</button></div>
+${fld('Username','<input class=in id=u autocomplete=username autocapitalize=none>')}${fld('Password','<input class=in id=p type=password autocomplete=current-password>')}
+<button class="btn pri wide" id=lb>Masuk</button></div></div>`;
+$$('.seg button').forEach(b=>b.onclick=()=>{lm=b.dataset.m;$$('.seg button').forEach(x=>x.classList.toggle('act',x===b));$('#lb').textContent=lm=='login'?'Masuk':'Buat akun'});
+const sub=()=>tr(async()=>{const b={username:$('#u').value,password:$('#p').value};if(lm=='reg')await api('/register','POST',b);await api('/login','POST',b);me=await api('/me');route()});
+$('#lb').onclick=sub;$('#p').onkeydown=e=>e.key=='Enter'&&sub();$('#u').onkeydown=e=>e.key=='Enter'&&$('#p').focus();setTimeout(()=>$('#u').focus(),50)}
+
+/* ---------- shell + router ---------- */
+function shell(){if($('#main'))return;
+$('#app').innerHTML=`<header class=top><div class=bar><a class=logo href="#/">${LOGO(30)}<b>Node<span>Panel</span></b></a><nav><a href="#/" data-r="">${ic('server')}<span>Server</span></a>${me.role=='admin'?`<a href="#/admin" data-r=admin>${ic('shield')}<span>Admin</span></a>`:''}<a href="#/account" data-r=account>${ic('users')}<span>Akun</span></a></nav><div class=usr><span class=av title="${E(me.username)}">${E(me.username[0].toUpperCase())}</span><button class=ib id=lo title=Keluar>${ic('logout')}</button></div></div></header><main id=main class=wrap></main><div id=drop class=drop><div>${ic('upload',34)}<br>Lepas file untuk upload</div></div>`;
+$('#lo').onclick=()=>api('/logout','POST').finally(()=>{me=null;srvId=null;route()})}
+async function route(){
+if(!me)return loginView();
+const h=location.hash.replace(/^#\/?/,'').split('/');
+if(h[0]==='s'&&+h[1]&&+h[1]===srvId&&$('#t-con')){tab=TABS.some(t=>t[0]===h[2])?h[2]:'con';return showTab()}
+clearInterval(tm);es&&es.close();es=null;srvId=null;shell();
+const sec=h[0]==='admin'?'admin':h[0]==='account'?'account':'';
+$$('.top nav a').forEach(a=>a.classList.toggle('act',a.dataset.r===sec));
+if(h[0]==='s'&&+h[1]){cur=+h[1];tab=TABS.some(t=>t[0]===h[2])?h[2]:'con';return srvView()}
+cur=null;
+if(h[0]==='admin'&&me.role==='admin')return adminView();
+if(h[0]==='account')return accountView();
+return homeView()}
+window.addEventListener('hashchange',route);
+async function init(){try{me=await api('/me')}catch{me=null}route()}
+
+/* ---------- home ---------- */
+const sk=n=>Array.from({length:n},()=>'<div class=sk style="height:96px"></div>').join('');
+const svCard=(s,i)=>`<div class="card sc" data-go="${s.id}" style="animation-delay:${i*40}ms"><div class=sc-h><span class="dot ${s.status=='running'?'on':''}"></span><b>${E(s.name)}</b><span class="pill ${s.status=='running'?'ok':s.status=='starting'?'wn':''}">${s.status}</span></div>
+<div class=sc-m><span>${ic('cpu',14)} ${ramTxt(s.ram)}</span><span>${ic('globe',14)} :${s.port}</span>${s.owner?`<span>${ic('users',14)} ${E(s.owner)}</span>`:''}</div>
+<div class=sc-a>${s.status=='running'?`<button class="btn sm ghost" data-q=stop data-id=${s.id}>${ic('stop',14)} Stop</button>`:`<button class="btn sm ok" data-q=start data-id=${s.id}>${ic('play',14)} Start</button>`}<button class="btn sm ghost" data-q=open data-id=${s.id}>Kelola →</button></div></div>`;
+const emptyHome=`<div class="card empty" style="grid-column:1/-1"><div class=ei>${ic('server',30)}</div><h3>Belum ada server</h3><p>Buat server pertama lo dan upload kode Node.js.</p><button class="btn pri" data-nw=1>${ic('plus')} Buat server</button></div>`;
+async function homeView(){const m=$('#main');m.innerHTML=`<div class=grid>${sk(3)}</div>`;
+const sv=await tr(()=>api('/servers'));if(!sv)return;
+const on=sv.filter(s=>s.status=='running').length;
+m.innerHTML=`<div class=head><div><h1>Server saya</h1><p class=m style="margin:2px 0 0" id=hs>${sv.length} server · ${on} online</p></div><button class="btn pri" data-nw=1>${ic('plus')} Server baru</button></div><div class=grid id=sg>${sv.map(svCard).join('')||emptyHome}</div>`;
+tm=setInterval(async()=>{const x=await api('/servers').catch(()=>null);if(!x||!$('#sg'))return;$('#sg').innerHTML=x.map(s=>svCard(s,0)).join('')||emptyHome;$('#hs').textContent=`${x.length} server · ${x.filter(s=>s.status=='running').length} online`},4000)}
+async function newServer(){const adm=me.role==='admin',us=adm?await tr(()=>api('/users')):[];if(adm&&!us)return;
+const m=openModal(`<h3>Server baru</h3>${fld('Nama','<input class=in id=ns placeholder="contoh: bot-discord" maxlength=40>')}${fld('RAM','<select class=in id=nr>'+[1,2,3,4,5,6,7,8,9,10].map(x=>`<option value=${x*1024}>${x} GB</option>`).join('')+(adm?'<option value=0>Unlimited</option>':'')+'</select>')}${adm?fld('Pemilik','<select class=in id=no>'+us.map(u=>`<option value=${u.id} ${u.id==me.id?'selected':''}>${E(u.username)}</option>`).join('')+'</select>'):''}<div class=macts><button class="btn ghost" data-x="">Batal</button><button class="btn pri" id=nok>${ic('plus',15)} Buat</button></div>`);
+setTimeout(()=>$('#ns',m.el).focus(),60);
+const mk=()=>tr(async()=>{const r=await api('/servers','POST',{name:$('#ns',m.el).value,ram:+$('#nr',m.el).value,user_id:adm?+$('#no',m.el).value:undefined});m.close();toast('Server dibuat','ok');go('#/s/'+r.id)});
+$('#nok',m.el).onclick=mk;$('#ns',m.el).onkeydown=e=>e.key=='Enter'&&mk()}
+
+/* ---------- server view ---------- */
+const loadS=async()=>{S=await api('/servers/'+cur)};
+async function srvView(){const m=$('#main');m.innerHTML=`<div class=sk style="height:230px"></div>`;
+try{await loadS()}catch(e){toast(e.message,'err');return go('#/')}
+srvId=cur;path='';sel.clear();cmdHist=[];stick=true;m.innerHTML=srvHTML();
+es=new EventSource('/api/servers/'+cur+'/console');es.onmessage=e=>logLine(JSON.parse(e.data));
+const t=$('#term');t.onscroll=()=>{stick=t.scrollTop+t.clientHeight>=t.scrollHeight-30};
+$('#cmd').onkeydown=e=>{if(e.key==='Enter')sendCmd();else if(e.key==='ArrowUp'&&cmdHist.length){hi=Math.max(0,hi-1);e.target.value=cmdHist[hi];e.preventDefault()}else if(e.key==='ArrowDown'){hi=Math.min(cmdHist.length,hi+1);e.target.value=cmdHist[hi]||'';e.preventDefault()}};
+$('#fq').oninput=renderFiles;$('#up').onchange=e=>{uploadFiles([...e.target.files]);e.target.value=''};
+tm=setInterval(poll,2000);poll();showTab()}
+function srvHTML(){const s=S,addr=location.hostname+':'+s.port,web=location.origin+'/s/'+s.id+'/',adm=me.role==='admin';
+return `<div class=back><a href="#/">← Semua server</a></div>
+<section class="card hero"><div class=hr1><div class=ht><span id=hdot class=dot></span><h1>${E(s.name)}</h1><span id=st class=pill>${s.status}</span></div>
+<div class=pbtns><button class="btn ok" id=b-start onclick="pw('start')">${ic('play',15)} Start</button><button class="btn pri" onclick="pw('restart')">${ic('refresh',15)} Restart</button><button class="btn ghost" id=b-stop onclick="pw('stop')">${ic('stop',15)} Stop</button><button class="btn dng ghost" onclick="killS()">${ic('zap',15)} Kill</button></div></div>
+<div class=chips><div class=chip><div><small>SERVER ADDRESS</small><b>${E(addr)}</b></div><button class=ib data-copy="${E(addr)}" title=Salin>${ic('copy',15)}</button></div>
+<div class=chip><div><small>WEB URL (lewat tunnel)</small><a href="${E(web)}" target=_blank rel=noopener><b>${E(web)}</b></a></div><button class=ib data-copy="${E(web)}" title=Salin>${ic('copy',15)}</button></div></div>
+<div class=stats><div class=stat><span>${ic('clock',14)} Uptime</span><b id=upt>—</b><small>&nbsp;</small></div>
+<div class=stat><span>${ic('cpu',14)} RAM</span><b id=mem>—</b><small id=memlim></small><div class=bar2><i id=memb></i></div></div>
+<div class=stat><span>${ic('disk',14)} Disk</span><b id=dk>—</b><small id=dklim></small><div class=bar2><i id=dkb></i></div></div>
+<div class=stat><span>${ic('globe',14)} Port</span><b>${s.port}</b><small>${s.allocs.length?'+'+s.allocs.length+' tambahan':'primary'}</small></div></div></section>
+<div class=tabs>${TABS.map(([k,v,i])=>`<a class=tab data-t=${k} href="#/s/${s.id}/${k}">${ic(i,16)} ${v}</a>`).join('')}</div>
+
+<div id=t-con class=pane><div class=tool><label class=sw><input type=checkbox id=asc checked><i></i><span class=m>Auto-scroll</span></label><div class=sp></div><button class="btn sm ghost" onclick="$('#term').innerHTML=''">Bersihkan</button><button class="btn sm ghost" onclick="cp($('#term').innerText)">${ic('copy',14)} Salin</button></div>
+<div id=term class=term></div><div class=cmd>${ic('terminal',16)}<input id=cmd placeholder="Kirim perintah ke stdin... (Enter)" autocomplete=off autocapitalize=none spellcheck=false><button class="btn sm pri" onclick="sendCmd()">Kirim</button></div></div>
+
+<div id=t-files class="pane hide"><div class=card>
+<div class=tool><button class="btn pri" onclick="$('#up').click()">${ic('upload',16)} Upload</button><input id=up type=file multiple class=hide><button class="btn ghost" onclick="newFile()">${ic('plus',16)} File</button><button class="btn ghost" onclick="newDir()">${ic('folder',16)} Folder</button><div class=sp></div><div style="position:relative;flex:1 1 160px;max-width:260px"><input id=fq class=in placeholder="Cari file..." style="padding-left:34px"><span style="position:absolute;left:11px;top:11px;color:var(--m)">${ic('search',15)}</span></div></div>
+<div id=bc class=crumbs></div><div id=selbar class="selbar hide"></div><div id=fl></div></div></div>
+
+<div id=t-start class="pane hide"><div class=card><h3>Startup</h3>
+${fld('Startup command',`<input class=in id=su value="${E(s.startup)}"><div class=cat style="margin-top:8px">${['node index.js','node main.js','node app.js','node server.js','npm start'].map(c=>`<button class="btn sm ghost" data-preset="${c}">${c}</button>`).join('')}</div>`)}
+${fld('Versi Node.js '+(s.docker?'':'<span class=m style="font-weight:400">(aktif jika mode Docker)</span>'),`<select class=in id=im>${['24','22','20','18'].map(v=>`<option value=${v} ${v==s.image?'selected':''}>Node.js ${v}</option>`).join('')}</select>`)}
+<div class=field><label class=sw><input type=checkbox id=ar ${s.autorestart?'checked':''}><i></i><span>Auto-restart kalau crash</span></label></div>
+${fld('Environment variables (KEY=VALUE, satu per baris)',`<textarea class=in id=envt rows=5 spellcheck=false>${E(Object.entries(s.env||{}).map(([k,v])=>k+'='+v).join('\n'))}</textarea>`)}
+<div class=cat><button class="btn pri" onclick="saveStart()">${ic('save',15)} Simpan</button><button class="btn ghost" onclick="pw('install')">Jalankan npm install</button></div>
+<p class=m style="margin:12px 0 0">Variabel otomatis: PORT, SERVER_PORT, ALLOC_PORTS. Berlaku saat start/restart berikutnya. Server yang sedang berjalan otomatis menyala lagi kalau panel restart.</p></div></div>
+
+<div id=t-net class="pane hide"></div><div id=t-bk class="pane hide"></div>
+
+<div id=t-set class="pane hide"><div class=card><h3>Settings</h3>
+${fld('Nama server',`<div class=cat style="flex-wrap:nowrap"><input class=in id=nm value="${E(s.name)}"><button class="btn pri" onclick="rename()">Simpan</button></div>`)}
+${adm?fld('RAM (admin)',`<div class=cat style="flex-wrap:nowrap"><select class=in id=rm>${[0,1,2,3,4,5,6,7,8,9,10].map(x=>`<option value=${x*1024} ${x*1024==s.ram?'selected':''}>${x?x+' GB':'Unlimited'}</option>`).join('')}</select><button class="btn pri" onclick="setRam()">Simpan</button></div>`):''}
+</div><div class=card style="border-color:rgba(251,113,133,.35)"><h3 class=er-t>Zona bahaya</h3><p class=m>Menghapus server menghapus semua file dan backup secara permanen.</p><button class="btn dng" onclick="delServer(${s.id})">${ic('trash',15)} Hapus server</button></div></div>`}
+function showTab(){TABS.forEach(([k])=>{const e=$('#t-'+k);e&&e.classList.toggle('hide',k!==tab)});$$('.tab').forEach(b=>b.classList.toggle('act',b.dataset.t===tab));
+if(tab==='files')loadFiles();if(tab==='net')netView();if(tab==='bk')bkView();if(tab==='con'){const t=$('#term');t&&(t.scrollTop=t.scrollHeight)}}
+async function poll(){try{await loadS()}catch{return}const s=S;if(!$('#st'))return;const on=s.status=='running';
+$('#st').className='pill '+(on?'ok':s.status=='starting'?'wn':'');$('#st').textContent=s.status;$('#hdot').className='dot '+(on?'on':'');
+$('#b-start').disabled=on;$('#b-stop').disabled=!on;
+$('#upt').textContent=on&&s.uptime?fmtUp(s.uptime):'—';
+const rl=s.ram?s.ram*1048576:0;$('#mem').textContent=s.mem?fmt(s.mem):'—';$('#memlim').textContent=rl?'dari '+fmt(rl):'tanpa batas';$('#memb').style.width=rl&&s.mem?Math.min(100,s.mem/rl*100)+'%':'0%';
+const dl=s.disk?s.disk*1048576:0;$('#dk').textContent=fmt(s.used);$('#dklim').textContent=dl?'dari '+fmt(dl):'tanpa batas';$('#dkb').style.width=dl?Math.min(100,s.used/dl*100)+'%':'0%'}
+const pw=a=>tr(async()=>{await api('/servers/'+cur+'/power','POST',{action:a});toast({start:'Memulai server...',stop:'Menghentikan server...',restart:'Restart server...',kill:'Kill dikirim',install:'npm install berjalan, lihat Console'}[a],'ok');setTimeout(poll,500);if(a==='install'||a==='start'||a==='restart')go('#/s/'+cur+'/con')});
+const killS=async()=>{if(await sure('Paksa matikan proses sekarang? Data yang belum tersimpan bisa hilang.'))pw('kill')};
+const AC={30:'#6b7280',31:'#fb7185',32:'#34d399',33:'#fbbf24',34:'#60a5fa',35:'#c084fc',36:'#22d3ee',37:'#e5e7eb',90:'#6b7280',91:'#fda4af',92:'#6ee7b7',93:'#fde68a',94:'#93c5fd',95:'#d8b4fe',96:'#67e8f9',97:'#fff'};
+function ansi(t){let open=0;const o=E(t).replace(/\x1b\[([0-9;]*)m/g,(_,c)=>{let r='';for(const x of c.split(';').map(Number)){if(!x){r+='</span>'.repeat(open);open=0}else if(AC[x]){r+=`<span style="color:${AC[x]}">`;open++}else if(x===1){r+='<span style="font-weight:700">';open++}}return r});return o+'</span>'.repeat(open)}
+function logLine(l){const t=$('#term');if(!t)return;const d=document.createElement('div');d.className='ln'+(l.startsWith('[panel]')?' pn':l.startsWith('[tunnel]')?' tn':'');d.innerHTML=ansi(l)||'&nbsp;';t.appendChild(d);while(t.childElementCount>1000)t.firstChild.remove();if(stick&&$('#asc').checked)t.scrollTop=t.scrollHeight}
+const sendCmd=()=>{const i=$('#cmd'),v=i.value;if(!v)return;cmdHist.push(v);hi=cmdHist.length;i.value='';logLine('\x1b[36m> '+v+'\x1b[0m');tr(()=>api('/servers/'+cur+'/command','POST',{command:v}))};
+const saveStart=()=>tr(async()=>{const env={};$('#envt').value.split('\n').forEach(l=>{l=l.trim();if(!l)return;const i=l.indexOf('=');if(i>0)env[l.slice(0,i).trim()]=l.slice(i+1)});await api('/servers/'+cur,'PUT',{startup:$('#su').value,image:$('#im').value,autorestart:$('#ar').checked,env});await loadS();toast('Startup tersimpan','ok')});
+const rename=()=>tr(async()=>{await api('/servers/'+cur,'PUT',{name:$('#nm').value});toast('Nama diubah','ok');srvId=null;route()});
+const setRam=()=>tr(async()=>{await api('/servers/'+cur,'PUT',{ram:+$('#rm').value});await loadS();toast('RAM diubah, restart server untuk menerapkan','ok')});
+const delServer=async id=>{if(await sure('Hapus server ini beserta semua file dan backup-nya?'))tr(async()=>{await api('/servers/'+id,'DELETE');toast('Server dihapus','ok');go('#/')})};
+
+/* ---------- network ---------- */
+async function netView(){await tr(loadS);const s=S,web=location.origin+'/s/'+s.id+'/',h=location.hostname;
+$('#t-net').innerHTML=`<div class=card><h3>Network</h3><p class=m style="margin-top:-6px">Port (allocations)</p>
+<div class=ad><span><b>${E(h)}:${s.port}</b> <span class="pill ok" style="margin-left:6px">primary</span></span></div>
+${s.allocs.map(p=>`<div class=ad><b>${E(h)}:${p}</b><span class=cat><button class="btn sm ghost" data-alloc=primary data-port=${p}>Jadikan primary</button><button class="btn sm dng ghost" data-alloc=del data-port=${p}>${ic('trash',14)}</button></span></div>`).join('')}
+<button class="btn pri" data-alloc=add>${ic('plus',15)} Tambah port</button>
+<p class=m style="margin:16px 0 0">Aplikasi harus listen di <b>process.env.PORT</b>. Port tambahan ada di <b>process.env.ALLOC_PORTS</b>.<br><br>Domain trycloudflare hanya meneruskan HTTP/HTTPS, jadi web aplikasi dibuka lewat:<br><a href="${E(web)}" target=_blank rel=noopener style="color:var(--a2)">${E(web)}</a><br><br>Alamat host:port berguna kalau mesin punya IP publik dan port-nya dibuka di firewall.</p></div>`}
+
+/* ---------- backups ---------- */
+async function bkView(){const l=await tr(()=>api('/servers/'+cur+'/backups'));if(!l)return;
+$('#t-bk').innerHTML=`<div class=card><div class=head style="margin-bottom:6px"><h3 style="margin:0">Backups</h3><button class="btn pri" id=mkbk>${ic('plus',15)} Buat backup</button></div>
+${l.map(b=>`<div class=li><div><b>${E(b.name)}</b><br><span class=m>${fmt(b.size)} · ${ago(b.mtime)}</span></div><div class=cat><button class="btn sm ghost" data-bk=dl data-n="${E(b.name)}">${ic('download',14)}</button><button class="btn sm ghost" data-bk=restore data-n="${E(b.name)}">Restore</button><button class="btn sm dng ghost" data-bk=delete data-n="${E(b.name)}">${ic('trash',14)}</button></div></div>`).join('')||'<div class=empty><div class=ei>'+ic('archive',28)+'</div>Belum ada backup</div>'}
+<p class=m style="margin:12px 0 0">Restore menghapus semua file server sekarang lalu mengembalikan isi backup. Server harus dalam keadaan stop.</p></div>`;
+$('#mkbk').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='Membuat...';await tr(()=>api('/servers/'+cur+'/backup','POST',{action:'create'}));toast('Backup dibuat','ok');bkView()}}
+
+/* ---------- files ---------- */
+const P=n=>(path?path+'/':'')+n,fp=(a,b)=>api('/servers/'+cur+'/'+a,'POST',b);
+const isArc=n=>/\.(zip|tar|tar\.gz|tgz)$/i.test(n),extOf=n=>{const m=n.match(/\.(\w+)$/);return m?m[1].toLowerCase():''};
+const editable=f=>!f.dir&&f.size<2e6&&!/\.(png|jpe?g|gif|webp|ico|zip|tar|gz|tgz|mp4|mp3|pdf|exe|so|node|woff2?|ttf|bin|db|sqlite)$/i.test(f.name);
+async function loadFiles(){sel.clear();$('#fl').innerHTML=sk(4);const l=await tr(()=>api('/servers/'+cur+'/files?path='+enc(path)));if(!l){$('#fl').innerHTML='';return}files=l.sort((a,b)=>b.dir-a.dir||a.name.localeCompare(b.name));renderFiles()}
+const rowHTML=f=>`<div class=frow><input type=checkbox class=cb data-sel="${E(f.name)}" ${sel.has(f.name)?'checked':''}><div class=fn data-open="${E(f.name)}" data-dir="${f.dir?1:0}"><span class="fi ${f.dir?'d':extOf(f.name)=='js'?'js':extOf(f.name)=='json'?'json':''}">${ic(f.dir?'folder':'file',18)}</span><div><b>${E(f.name)}</b><small>${f.dir?'Folder':fmt(f.size)} · ${ago(f.mtime)}</small></div></div>
+<div class=fa>${editable(f)?`<button class=ib data-act=edit data-n="${E(f.name)}" title=Edit>${ic('edit',16)}</button>`:''}${isArc(f.name)?`<button class=ib data-act=ext data-n="${E(f.name)}" title=Extract>${ic('archive',16)}</button>`:''}<button class=ib data-act=dl data-n="${E(f.name)}" title=Download>${ic('download',16)}</button><button class=ib data-act=ren data-n="${E(f.name)}" title=Rename>${ic('type',16)}</button><button class="ib d" data-act=rm data-n="${E(f.name)}" title=Hapus>${ic('trash',16)}</button></div></div>`;
+function renderFiles(){if(!$('#fl'))return;const q=($('#fq').value||'').toLowerCase(),ps=path?path.split('/'):[];
+$('#bc').innerHTML=`<a class=crumb data-p="">${ic('server',14)} root</a>`+ps.map((x,i)=>`<span class=sep>/</span><a class=crumb data-p="${E(ps.slice(0,i+1).join('/'))}">${E(x)}</a>`).join('');
+const L=files.filter(f=>!q||f.name.toLowerCase().includes(q));
+const up=path?`<div class=frow><span></span><div class=fn data-p="${E(ps.slice(0,-1).join('/'))}"><span class=fi>${ic('up',18)}</span><div><b>..</b><small>Naik satu folder</small></div></div><span></span></div>`:'';
+$('#fl').innerHTML=up+(L.length?L.map(rowHTML).join(''):`<div class=empty><div class=ei>${ic('folder',28)}</div>${q?'Tidak ada hasil':'Folder kosong. Klik Upload atau drag &amp; drop file ke sini.'}</div>`);selBar()}
+function selBar(){const b=$('#selbar');if(!b)return;b.classList.toggle('hide',!sel.size);b.innerHTML=sel.size?`<b>${sel.size} dipilih</b><div class=sp></div><button class="btn sm ghost" onclick="arcSel()">${ic('archive',14)} Arsipkan</button><button class="btn sm dng" onclick="delSel()">${ic('trash',14)} Hapus</button><button class=ib onclick="sel.clear();renderFiles()">${ic('x',15)}</button>`:''}
+const newFile=async()=>{const n=await ask('File baru','','nama-file.js');if(n)tr(async()=>{await api('/servers/'+cur+'/file','PUT',{path:P(n),content:''});await loadFiles();editFile(n)})};
+const newDir=async()=>{const n=await ask('Folder baru','','nama-folder');if(n)tr(async()=>{await fp('mkdir',{path:P(n)});loadFiles()})};
+const arcSel=()=>tr(async()=>{await fp('compress',{dir:path,names:[...sel]});toast('Arsip dibuat','ok');loadFiles()});
+const delSel=async()=>{if(await sure(`Hapus ${sel.size} item terpilih?`))tr(async()=>{await fp('delete',{paths:[...sel].map(P)});toast('Terhapus','ok');loadFiles()})};
+async function editFile(name){const full=P(name),r=await tr(()=>api('/servers/'+cur+'/file?path='+enc(full)));if(!r)return;let orig=r.content;
+const isJs=/\.(js|mjs|cjs|json)$/.test(name);
+const m=openModal(`<div class=eh>${ic('file',18)}<b style="word-break:break-all">${E(full)}</b><span id=dirty class=pill style="display:none">belum disimpan</span><div class=sp></div><button class=ib id=ecl>${ic('x',16)}</button></div><textarea id=etx class=edit spellcheck=false autocapitalize=none></textarea><div class=macts><span class=m id=epos></span><div class=sp></div>${isJs?`<button class="btn ghost" id=esr>Simpan &amp; Restart</button>`:''}<button class="btn pri" id=esv>${ic('save',15)} Simpan</button></div>`,true);
+const t=$('#etx',m.el);t.value=orig;setTimeout(()=>t.focus(),80);
+const dirty=()=>t.value!==orig,upd=()=>{$('#dirty',m.el).style.display=dirty()?'inline-flex':'none';const p=t.value.slice(0,t.selectionStart).split('\n');$('#epos',m.el).textContent=`Baris ${p.length}, Kolom ${p[p.length-1].length+1}`};
+const save=async restart=>{const ok_=await tr(async()=>{await api('/servers/'+cur+'/file','PUT',{path:full,content:t.value});return 1});if(!ok_)return;orig=t.value;upd();toast('Tersimpan','ok');if(restart)pw('restart')};
+const close=async()=>{if(dirty()&&!await sure('Ada perubahan yang belum disimpan. Tutup tanpa menyimpan?'))return;m.close()};
+m.el._c=close;$('#ecl',m.el).onclick=close;$('#esv',m.el).onclick=()=>save(false);const sr=$('#esr',m.el);sr&&(sr.onclick=()=>save(true));
+t.oninput=upd;t.onclick=upd;t.onkeyup=upd;
+t.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save(false)}else if(e.key==='Tab'){e.preventDefault();t.setRangeText('  ',t.selectionStart,t.selectionEnd,'end');upd()}};upd()}
+
+/* ---------- upload queue ---------- */
+const uq=[];let uid=0,uBusy=false,uqRaf=0;
+function uploadFiles(fl){for(const f of fl)uq.push({f,id:++uid,name:f.name,size:f.size,loaded:0,st:'wait',dir:path,srv:cur});renderUQ();pump()}
+async function pump(){if(uBusy)return;uBusy=true;
+for(const it of uq){if(it.st!=='wait')continue;it.st='run';renderUQ();try{await sendFile(it);it.st='done'}catch(e){it.st=it.cancel?'cancel':'err';if(!it.cancel)toast(it.name+': '+e.message,'err')}renderUQ()}
+uBusy=false;if(tab==='files'&&srvId===cur&&$('#fl'))loadFiles();
+setTimeout(()=>{if(!uq.some(i=>i.st==='run'||i.st==='wait')){uq.length=0;renderUQ()}},4500)}
+async function sendFile(it){const CH=4*1048576,f=it.f,full=(it.dir?it.dir+'/':'')+it.name;
+if(f.size===0)return xhrChunk(it,full,0,f.slice(0,0));
+for(let off=0;off<f.size;off+=CH){if(it.cancel)throw new Error('dibatalkan');await xhrChunk(it,full,off,f.slice(off,off+CH))}}
+const xhrChunk=(it,full,off,blob)=>new Promise((res,rej)=>{let tries=0;const send=()=>{const x=new XMLHttpRequest();it.x=x;x.open('POST','/api/servers/'+it.srv+'/upload?path='+enc(full)+'&offset='+off);x.setRequestHeader('Content-Type','application/octet-stream');
+x.upload.onprogress=e=>{it.loaded=off+e.loaded;renderUQ()};
+x.onload=()=>{if(x.status<300){it.loaded=off+blob.size;renderUQ();return res()}let m;try{m=JSON.parse(x.responseText).error}catch{}if(x.status<500||++tries>=3)return rej(new Error(m||('HTTP '+x.status)));setTimeout(send,1000)};
+x.onerror=()=>{if(++tries>=3)return rej(new Error('koneksi putus'));setTimeout(send,1000)};x.onabort=()=>rej(new Error('dibatalkan'));x.send(blob)};send()});
+function renderUQ(){if(uqRaf)return;uqRaf=requestAnimationFrame(()=>{uqRaf=0;const el=$('#uq');if(!uq.length){el.classList.remove('show');return}
+const act=uq.filter(i=>i.st==='run'||i.st==='wait').length;el.classList.add('show');
+el.innerHTML=`<div class=uh><b>${ic('upload',15)} ${act?'Mengunggah ('+act+')':'Upload selesai'}</b><button class=ib data-uc=all>${ic('x',14)}</button></div>`+uq.map(i=>{const p=i.st=='done'?100:i.size?Math.min(100,i.loaded/i.size*100):0;return `<div class=ur><div class=ut><span>${E(i.name)}</span><small>${i.st=='done'?ic('check',13):i.st=='err'?'gagal':i.st=='cancel'?'batal':i.st=='wait'?'antre':Math.floor(p)+'%'}</small></div><div class=pbar><i class="${i.st}" style="width:${p}%"></i></div>${i.st=='run'||i.st=='wait'?`<a data-uc="${i.id}">batalkan</a>`:''}</div>`}).join('')})}
+
+/* ---------- admin & account ---------- */
+async function adminView(){const m=$('#main');m.innerHTML=sk(3);
+const r=await tr(()=>Promise.all([api('/users'),api('/servers'),api('/health')]));if(!r)return;const[us,sv,h]=r,t=x=>x?`<span class=ok-t>${ic('check',14)} ada</span>`:`<span class=er-t>${ic('x',14)} tidak ada</span>`;
+m.innerHTML=`<div class=head><div><h1>Admin</h1><p class=m style="margin:2px 0 0">Kelola user dan pantau sistem</p></div></div>
+<div class=card><h3>Sistem</h3><div class=kv>
+<div class=stat><span>${ic('globe',14)} URL panel</span><b>${h.tunnel?`<a href="${E(h.tunnel)}" target=_blank style="color:var(--a2)">${E(h.tunnel)}</a>`:'tunnel belum aktif'}</b></div>
+<div class=stat><span>Runtime</span><b>Node ${E(h.node)}</b><small>${E(h.platform)}/${E(h.arch)} · mode ${h.docker?'Docker':'biasa'}</small></div>
+<div class=stat><span>Tools</span><b style="font-size:13px;line-height:1.8">tar ${t(h.tools.tar)}<br>unzip ${t(h.tools.unzip)}<br>docker ${t(h.tools.docker)}<br>cloudflared ${t(h.cloudflared)}</b></div>
+<div class=stat><span>Penyimpanan</span><b class="${h.writable?'ok-t':'er-t'}">${h.writable?'bisa ditulis':'TIDAK BISA DITULIS'}</b><small>${E(h.err||h.data)}</small></div>
+<div class=stat><span>Aktivitas</span><b>${h.running} server aktif</b><small>RAM panel ${fmt(h.memory)}</small></div></div></div>
+<div class=card><div class=head style="margin-bottom:4px"><h3 style="margin:0">Users (${us.length})</h3><button class="btn pri sm" id=au>${ic('plus',14)} Tambah user</button></div>
+${us.map(u=>`<div class=li><div><b>${E(u.username)}</b> <span class="pill ${u.role=='admin'?'ok':''}">${u.role}</span></div><div class=cat><button class="btn sm ghost" data-ad=pw data-id=${u.id} data-n="${E(u.username)}">${ic('key',14)} Reset password</button>${u.id!=me.id?`<button class="btn sm dng ghost" data-ad=del data-id=${u.id} data-n="${E(u.username)}">${ic('trash',14)}</button>`:''}</div></div>`).join('')}</div>
+<div class=card><h3>Semua server (${sv.length})</h3>${sv.map(s=>`<div class=li><div><span class="dot ${s.status=='running'?'on':''}" style="display:inline-block;margin-right:8px"></span><b>${E(s.name)}</b> <span class=m>· ${E(s.owner)} · ${ramTxt(s.ram)} · :${s.port}</span></div><div class=cat><a class="btn sm ghost" href="#/s/${s.id}">Kelola</a></div></div>`).join('')||'<span class=m>Belum ada server</span>'}</div>`;
+$('#au').onclick=()=>{const mm=openModal(`<h3>Tambah user</h3>${fld('Username','<input class=in id=nu autocapitalize=none>')}${fld('Password (min 6)','<input class=in id=np type=password>')}${fld('Role','<select class=in id=nrl><option>user</option><option>admin</option></select>')}<div class=macts><button class="btn ghost" data-x="">Batal</button><button class="btn pri" id=nok>Tambah</button></div>`);
+$('#nok',mm.el).onclick=()=>tr(async()=>{await api('/users','POST',{username:$('#nu',mm.el).value,password:$('#np',mm.el).value,role:$('#nrl',mm.el).value});mm.close();toast('User ditambah','ok');adminView()})}}
+function accountView(){$('#main').innerHTML=`<div class=head><div><h1>Akun</h1><p class=m style="margin:2px 0 0">${E(me.username)} · ${me.role}</p></div></div>
+<div class=card style="max-width:480px"><h3>Ganti password</h3>${fld('Password lama','<input class=in id=po type=password autocomplete=current-password>')}${fld('Password baru (min 6)','<input class=in id=pn type=password autocomplete=new-password>')}<button class="btn pri" id=cpb>${ic('key',15)} Ganti password</button></div>`;
+$('#cpb').onclick=()=>tr(async()=>{await api('/password','POST',{old:$('#po').value,new:$('#pn').value});toast('Password diganti','ok');$('#po').value=$('#pn').value=''})}
+
+/* ---------- global events ---------- */
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-q],[data-go],[data-nw],[data-copy],[data-preset],[data-alloc],[data-bk],[data-ad],[data-uc],[data-act],[data-open],[data-p]');if(!t)return;const d=t.dataset;
+if(d.copy!==undefined)return cp(d.copy);
+if(d.nw)return newServer();
+if(d.q){e.stopPropagation();if(d.q==='open')return go('#/s/'+d.id);return tr(async()=>{await api('/servers/'+d.id+'/power','POST',{action:d.q});toast(d.q=='start'?'Memulai...':'Menghentikan...','ok')})}
+if(d.go)return go('#/s/'+d.go);
+if(d.preset){$('#su').value=d.preset;return}
+if(d.uc){if(d.uc==='all'){if(!uq.some(i=>i.st==='run'||i.st==='wait'))uq.length=0;$('#uq').classList.remove('show');return}const it=uq.find(i=>i.id==d.uc);if(it){it.cancel=true;if(it.st==='wait')it.st='cancel';else it.x&&it.x.abort();renderUQ()}return}
+if(d.ad){if(d.ad==='pw'){const p=await ask('Password baru untuk '+d.n,'','min 6 karakter');if(p)tr(async()=>{await api('/users/'+d.id,'PUT',{password:p});toast('Password direset','ok')})}
+else if(await sure(`Hapus user <b>${E(d.n)}</b> beserta semua servernya?`))tr(async()=>{await api('/users/'+d.id,'DELETE');toast('User dihapus','ok');adminView()});return}
+if(cur==null)return;
+if(d.alloc){return tr(async()=>{await api('/servers/'+cur+'/alloc','POST',{action:d.alloc,port:+d.port});netView()})}
+if(d.bk){const n=d.n;if(d.bk==='dl')return location.href='/api/servers/'+cur+'/backupdl?name='+enc(n);
+if(d.bk==='delete'&&!await sure('Hapus backup ini?'))return;if(d.bk==='restore'&&!await sure('Restore akan <b>menghapus semua file</b> server sekarang lalu mengembalikan isi backup. Lanjut?'))return;
+return tr(async()=>{await api('/servers/'+cur+'/backup','POST',{action:d.bk,name:n});toast(d.bk==='restore'?'Backup dipulihkan':'Backup dihapus','ok');bkView()})}
+if(d.p!==undefined){path=d.p;return loadFiles()}
+if(d.open!==undefined){if(d.dir=='1'){path=P(d.open);return loadFiles()}const f=files.find(x=>x.name===d.open);return f&&editable(f)?editFile(d.open):toast('File biner: gunakan Download','info')}
+const n=d.n;
+if(d.act==='edit')return editFile(n);
+if(d.act==='dl')return location.href='/api/servers/'+cur+'/download?path='+enc(P(n));
+if(d.act==='ext')return tr(async()=>{await fp('decompress',{path:P(n)});toast('Berhasil di-extract','ok');loadFiles()});
+if(d.act==='ren'){const to=await ask('Ganti nama',n);if(to&&to!==n)tr(async()=>{await fp('rename',{from:P(n),to:P(to)});loadFiles()});return}
+if(d.act==='rm'){if(await sure(`Hapus <b>${E(n)}</b>?`))tr(async()=>{await fp('delete',{paths:[P(n)]});toast('Terhapus','ok');loadFiles()})}});
+document.addEventListener('change',e=>{const n=e.target.dataset&&e.target.dataset.sel;if(n!==undefined){e.target.checked?sel.add(n):sel.delete(n);selBar()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const os=$$('.ov'),o=os[os.length-1];o&&o._c(null)}});
+let dc=0;const hasF=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files');
+addEventListener('dragenter',e=>{if(!hasF(e))return;e.preventDefault();if(tab==='files'&&$('#t-files')){dc++;$('#drop').classList.add('show')}});
+addEventListener('dragleave',e=>{if(!$('#drop'))return;dc=Math.max(0,dc-1);if(!dc)$('#drop').classList.remove('show')});
+addEventListener('dragover',e=>{if(hasF(e))e.preventDefault()});
+addEventListener('drop',e=>{if(!hasF(e))return;e.preventDefault();dc=0;const dr=$('#drop');dr&&dr.classList.remove('show');if(tab==='files'&&$('#t-files')&&srvId)uploadFiles([...e.dataTransfer.files])});
+init();
+</script></body></html>
